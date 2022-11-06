@@ -159,7 +159,6 @@ function OneCore:BuildFrame()
 		if not self.frame.bags[bag] then
 			self.frame.bags[bag] = self:CreateBagFrame(self.frame, bag)
 		end
-
 		self.frame.bags[bag].type = bagType
 
 		if self.frame.bags[bag].size ~= size then
@@ -263,6 +262,9 @@ function OneCore:UpdateBag(bag)
 		10.0 Biggest scuffed fix but its working
 
 		]]
+		-- Remove the blue border kinda scuffed aswell but if it works.. it works ..
+		slot.BattlepayItemTexture:Hide()
+		
 		local icon, itemCount, locked, quality, readable, lootable, itemLink, isFiltered, noValue, itemID, isBound = GetContainerItemInfo(bag:GetID(), slot:GetID())
 		if icon then
 			slot:SetItemButtonTexture(icon)
