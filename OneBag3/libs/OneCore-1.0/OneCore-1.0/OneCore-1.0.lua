@@ -264,7 +264,7 @@ function OneCore:UpdateBag(bag)
 		]]
 		-- Remove the blue border kinda scuffed aswell but if it works.. it works ..
 		slot.BattlepayItemTexture:Hide()
-		
+
 		local icon, itemCount, locked, quality, readable, lootable, itemLink, isFiltered, noValue, itemID, isBound = GetContainerItemInfo(bag:GetID(), slot:GetID())
 		if icon then
 			slot:SetItemButtonTexture(icon)
@@ -280,7 +280,7 @@ function OneCore:UpdateBag(bag)
 			end
 			-- Bandaid cooldown fix stop
 		else
-			-- Bandid fix to remove item's previous location data when we drag it somewhere
+			-- Bandaid fix to remove item's previous location data when we drag it somewhere
 			_G[slot:GetName().."IconTexture"]:Hide()
 			_G[slot:GetName().."Count"]:Hide()
 			_G[slot:GetName().."Cooldown"]:Hide()

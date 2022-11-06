@@ -252,7 +252,6 @@ end
 --- Creates the backpack button, which differs signifcantly from the other bag buttons
 -- @param parent the parent frame which the button will be attached to.
 function OneBag3:CreateBackpackButton(parent)
-	-- Jump2
 	local button = CreateFrame("ItemButton", "OBSideBarBackpackButton", parent, "CircularItemButtonTemplate")
 
 	button:SetScale(0.60)
