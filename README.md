@@ -1,4 +1,5 @@
 # OneBag3
-Working fix for World of Warcraft Shadowlands 9.0 Prepatch
+Disclaimer, I am not an addon expert, these fix might be "unstable" or may have some small issues left.
+These are just side fix so it is somewhat usable while its getting officialy fixed.
 
-Open the folder when you download drag the "OneBag3" folder into your wow addon file
+Thanks Kaelten for you amazing addon <3 
