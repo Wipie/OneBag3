@@ -174,13 +174,13 @@ function OneFrame:CreateBaseFrame(framename, width, height)
 	frame:EnableMouse(true)
 	frame:SetMovable(true)
 	frame:RegisterForDrag("LeftButton")
-    
+
 	frame:SetBackdrop({
         bgFile = "Interface\\ChatFrame\\ChatFrameBackground", tile = true, tileSize = 16,
         edgeFile = "Interface\\Tooltips\\UI-Tooltip-Border", edgeSize = 16,
         insets = {left = 5, right = 5, top = 5, bottom = 5},
     })
-    
+
     frame:SetSize(width or 200, height or 200)
 
 	return frame
@@ -202,12 +202,12 @@ end
 --- Creates a highlight texture for a Button
 function OneFrame:CreateButtonHighlight(button)
     local highlight = button:CreateTexture(nil, "OVERLAY")
-    
+
     highlight:SetTexture("Interface\\Buttons\\CheckButtonHilight")
 	highlight:SetAllPoints(button)
 	highlight:SetBlendMode("ADD")
     highlight:Hide()
-    
+
     return highlight
 end
 
@@ -278,14 +278,14 @@ function OneFrame:CreateMainFrame(framename, moneyType)
 	frame.name = name
 
     local closeButton = CreateFrame('Button', nil, frame, "UIPanelCloseButton")
-    closeButton:SetPoint("TOPRIGHT", frame, "TOPRIGHT", 0, -5)
+    closeButton:SetPoint("TOPRIGHT", frame, "TOPRIGHT", -10, -10)
     frame.closeButton = closeButton
 
 	local configButton = CreateFrame('Button', nil, frame)
 	configButton:SetHeight(32)
 	configButton:SetWidth(32)
 
-    configButton:SetPoint("RIGHT", closeButton, "LEFT", 3, -2)
+    configButton:SetPoint("RIGHT", closeButton, "LEFT", 0, 0)
     configButton:SetNormalTexture("Interface\\Buttons\\UI-SquareButton-Up")
     configButton:SetPushedTexture("Interface\\Buttons\\UI-SquareButton-Down")
     configButton:SetHighlightTexture("Interface\\Buttons\\UI-Common-MouseHilight", "ADD")
@@ -315,19 +315,21 @@ function OneFrame:CreateMainFrame(framename, moneyType)
 
 	frame.configButton = configButton
 
-    local sortButton = CreateFrame("Button", nil, frame, "BankAutoSortButtonTemplate")
-    sortButton:SetHeight(25)
-    sortButton:SetWidth(28)
-    sortButton:SetPoint("RIGHT", configButton, "LEFT", 2, -1)
+    if WOW_PROJECT_ID == WOW_PROJECT_MAINLINE then
+        local sortButton = CreateFrame("Button", nil, frame, "BankAutoSortButtonTemplate")
+        sortButton:SetHeight(25)
+        sortButton:SetWidth(28)
+        sortButton:SetPoint("RIGHT", configButton, "LEFT", 2, -1)
 
-    sortButton:SetScript("OnEnter", nil)
-    sortButton:SetScript("OnLeave", nil)
-    sortButton:SetScript("OnClick", function()
-        PlaySound(43937, "SFX");
-        frame.handler:SortBags()
-    end)
+        sortButton:SetScript("OnEnter", nil)
+        sortButton:SetScript("OnLeave", nil)
+        sortButton:SetScript("OnClick", function()
+            PlaySound(43937, "SFX");
+            frame.handler:SortBags()
+        end)
 
-    frame.sortButton = sortButton
+        frame.sortButton = sortButton
+    end
 
     frame.childrenFrames = {}
 

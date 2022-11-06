@@ -9,7 +9,7 @@
 ## X-Category: Bags & Inventory
 ## X-Website: http://www.wowace.com/projects/OneBag3/
 ## X-Date: 1620146234
-## Version: v3.11.2
+## Version: v3.12.2
 ## SavedVariables: OneBag3DB
 ## OptionalDeps: Ace3, OneCore
 

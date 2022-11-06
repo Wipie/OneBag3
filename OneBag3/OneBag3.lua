@@ -91,7 +91,7 @@ function OneBag3:OnInitialize()
 			self.sidebar.buttons = {}
 			local button = self:CreateBackpackButton(self.sidebar)
 			button:ClearAllPoints()
-			button:SetPoint("TOP", self.sidebar, "TOP", 0, -15)
+			button:SetPoint("TOP", self.sidebar, "TOP", 0, -30)
 
 			self.sidebar.buttons[-1] = button
 			for bag=0, 3 do
@@ -252,16 +252,18 @@ end
 --- Creates the backpack button, which differs signifcantly from the other bag buttons
 -- @param parent the parent frame which the button will be attached to.
 function OneBag3:CreateBackpackButton(parent)
-	local button = CreateFrame("ItemButton", "OBSideBarBackpackButton", parent, "ItemAnimTemplate")
-	local highlight = self:CreateButtonHighlight(button)
+	-- Jump2
+	local button = CreateFrame("ItemButton", "OBSideBarBackpackButton", parent, "CircularItemButtonTemplate")
+
+	button:SetScale(0.60)
+
+	OBSideBarBackpackButtonNormalTexture:SetAtlas("bag-main");
 
 	button:SetID(0)
 	button:RegisterForClicks("LeftButtonUp", "RightButtonUp")
-	OBSideBarBackpackButtonIconTexture:SetTexture("Interface\\Buttons\\Button-Backpack-Up")
 
 	button:SetScript("OnEnter", function()
 		self:HighlightBagSlots(0)
-		highlight:Show()
 
 		GameTooltip:SetOwner(button, "ANCHOR_LEFT")
 		GameTooltip:SetText(BACKPACK_TOOLTIP, 1.0, 1.0, 1.0)
@@ -276,7 +278,6 @@ function OneBag3:CreateBackpackButton(parent)
 	button:SetScript("OnLeave", function(button)
 		if not self.frame.bags[0].checked then
 			self:UnhighlightBagSlots(0)
-			highlight:Hide()
 			
 			self.frame.bags[0].colorLocked = false
 		else
@@ -285,10 +286,11 @@ function OneBag3:CreateBackpackButton(parent)
 		GameTooltip:Hide()
 	end)
 
+	--[[
 	button:SetScript("OnReceiveDrag", function(event, btn) 
-		BackpackButton_OnClick(button, btn) 
+		BackpackOnEvent(button, btn) 
 	end)
-
+	]]
 	button:SetScript("OnClick", function(button) 
 		if ( not PutItemInBackpack() ) then
 			self.frame.bags[0].checked = not self.frame.bags[0].checked
@@ -302,24 +304,22 @@ end
 -- @param bagid the numeric id of the bag being checked
 -- @param parent the parent frame which the button will be attached to.
 function OneBag3:CreateBagButton(bag, parent)
-	local button = CreateFrame("ItemButton", "OBSideBarBag"..bag.."Slot", parent, 'BagSlotButtonTemplate')
-	local highlight = self:CreateButtonHighlight(button)
+	local button = CreateFrame("ItemButton", "OBSideBarBag"..bag.."Slot", parent, 'BaseBagSlotButtonTemplate')
 
 	button:SetScale(1.27)
 
-	self:SecureHookScript(button, "OnEnter", function(button)
-		self:HighlightBagSlots(button:GetID()-19)
-		highlight:Show()
+	button:SetScript("OnEnter", function(button)
+		self:HighlightBagSlots(bag + 1)
 	end)
 
 	button:SetScript("OnLeave", function(button)
 		local index = button:GetID() - 19
-		if not self.frame.bags[index].checked then
-			self:UnhighlightBagSlots(index)
-			highlight:Hide()
-			self.frame.bags[index].colorLocked = false
+		if not self.frame.bags[bag + 1].checked then
+			self:UnhighlightBagSlots(bag + 1)
+--			highlight:Hide()
+			self.frame.bags[bag + 1].colorLocked = false
 		else
-			self.frame.bags[index].colorLocked = true
+			self.frame.bags[bag + 1].colorLocked = true
 		end
 		GameTooltip:Hide()
 	end)
