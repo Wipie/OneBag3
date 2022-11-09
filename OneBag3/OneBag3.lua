@@ -307,8 +307,26 @@ function OneBag3:CreateBagButton(bag, parent)
 
 	button:SetScale(1.27)
 
+	-- Allow GameTooltip to display without causing an error 
+	button.commandName =  "TOGGLEBAG"..bag+1
+	
 	button:SetScript("OnEnter", function(button)
 		self:HighlightBagSlots(bag + 1)
+		if not KeybindFrames_InQuickKeybindMode() then
+			GameTooltip:SetOwner(button, "ANCHOR_LEFT")
+			if (GameTooltip:SetInventoryItem("player", button:GetID())) then
+				local keyBinding = GetBindingKey("TOGGLEBAG"..bag+1)
+				if ( keyBinding ) then
+					GameTooltip:AppendText(" "..NORMAL_FONT_COLOR_CODE.."("..keyBinding..")"..FONT_COLOR_CODE_CLOSE)
+				end
+			else 
+				local title = ContainerFrame_IsReagentBag(button:GetBagID()) and EQUIP_CONTAINER_REAGENT or EQUIP_CONTAINER;
+				GameTooltip:SetOwner(button, "ANCHOR_LEFT");
+				GameTooltip_SetTitle(GameTooltip, title);
+			end
+			GameTooltip:Show()
+		end
+
 	end)
 
 	button:SetScript("OnLeave", function(button)
