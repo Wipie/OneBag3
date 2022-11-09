@@ -150,7 +150,7 @@ end
 function OneCore:BuildFrame()
 	for _, bag in pairs(self.bagIndexes) do
 		local size = OneCore:GetContainerNumSlots(bag);
-		local bagType = select(2, GetContainerNumFreeSlots(bag))
+		local bagType = select(2, C_Container.GetContainerNumFreeSlots(bag))
 
 		if not self.frame.bags then
 			self.frame.bags = {}
@@ -265,13 +265,13 @@ function OneCore:UpdateBag(bag)
 		-- Remove the blue border kinda scuffed aswell but if it works.. it works ..
 		slot.BattlepayItemTexture:Hide()
 
-		local icon, itemCount, locked, quality, readable, lootable, itemLink, isFiltered, noValue, itemID, isBound = GetContainerItemInfo(bag:GetID(), slot:GetID())
-		if icon then
-			slot:SetItemButtonTexture(icon)
-			slot:SetItemButtonCount(itemCount)
+		local containerInfo = C_Container.GetContainerItemInfo(bag:GetID(), slot:GetID())
+		if containerInfo then
+			slot:SetItemButtonTexture(containerInfo.iconFileID)
+			slot:SetItemButtonCount(containerInfo.stackCount)
 			-- Bandaid cooldown fix start
 			local cooldown = _G[slot:GetName().."Cooldown"]
-			local start, duration, enable = GetContainerItemCooldown(bag:GetID(), slot:GetID())
+			local start, duration, enable = C_Container.GetContainerItemCooldown(bag:GetID(), slot:GetID())
 			CooldownFrame_Set(cooldown, start, duration, enable);
 			if ( duration > 0 and enable == 0 ) then
 				SetItemButtonTextureVertexColor(slot, 0.4, 0.4, 0.4);
@@ -359,7 +359,7 @@ function OneCore:ColorSlotBorder(slot, fcolor)
 	end
 
 	if self.db.profile.appearance.rarity and not fcolor and not bcolor then
-		local link = GetContainerItemLink(bag:GetID(), slot:GetID())
+		local link = C_Container.GetContainerItemLink(bag:GetID(), slot:GetID())
 		if link then
 			local rarity = select(3, GetItemInfo(link))
 			if rarity and (rarity > 1 or self.db.profile.appearance.lowlevel) then
@@ -427,7 +427,7 @@ end
 
 function OneCore:ApplySearchFilter(slot)
     if self.searchTerm and #self.searchTerm > 1 then
-        local link = GetContainerItemLink(slot:GetParent():GetID(), slot:GetID())
+        local link = C_Container.GetContainerItemLink(slot:GetParent():GetID(), slot:GetID())
         if not link or SearchEngine:Matches(link, self.searchTerm) then
             slot.searchOverlay:Hide()
         else
@@ -457,7 +457,7 @@ end
 
 --- Replacement for GetContainerNumSlots
 function OneCore:GetContainerNumSlots(bagId)
-    return _G.GetContainerNumSlots(bagId)
+    return _G.C_Container.GetContainerNumSlots(bagId)
 end
 
 --- Updates a slot's locked status.
@@ -469,7 +469,7 @@ function OneCore:UpdateItemLock(event, bagid, slotid)
         return
     end
 
-    local texture, itemCount, locked, quality, readable = GetContainerItemInfo(bagid, slotid);
+    local texture, itemCount, locked, quality, readable = C_Container.GetContainerItemInfo(bagid, slotid);
     SetItemButtonDesaturated(self:GetSlot(bagid, slotid), locked, 0.5, 0.5, 0.5);
 end
 
