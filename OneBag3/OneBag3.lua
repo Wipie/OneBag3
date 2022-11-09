@@ -306,6 +306,7 @@ function OneBag3:CreateBagButton(bag, parent)
 	local button = CreateFrame("ItemButton", "OBSideBarBag"..bag.."Slot", parent, 'BaseBagSlotButtonTemplate')
 
 	button:SetScale(1.27)
+  
 	-- Allow GameTooltip to display without causing an error 
 	button.commandName =  "TOGGLEBAG"..bag+1
 	
