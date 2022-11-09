@@ -427,7 +427,7 @@ end
 
 function OneCore:ApplySearchFilter(slot)
     if self.searchTerm and #self.searchTerm > 1 then
-        local link = GetContainerItemLink(slot:GetParent():GetID(), slot:GetID())
+        local link = C_Container.GetContainerItemLink(slot:GetParent():GetID(), slot:GetID())
         if not link or SearchEngine:Matches(link, self.searchTerm) then
             slot.searchOverlay:Hide()
         else

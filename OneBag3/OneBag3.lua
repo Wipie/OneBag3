@@ -306,9 +306,18 @@ function OneBag3:CreateBagButton(bag, parent)
 	local button = CreateFrame("ItemButton", "OBSideBarBag"..bag.."Slot", parent, 'BaseBagSlotButtonTemplate')
 
 	button:SetScale(1.27)
-
+	-- Allow GameTooltip to display without causing an error 
+	_G["OBSideBarBag"..bag.."Slot"].commandName = ""
 	button:SetScript("OnEnter", function(button)
 		self:HighlightBagSlots(bag + 1)
+		if not KeybindFrames_InQuickKeybindMode() then
+			GameTooltip:SetOwner(button, "ANCHOR_LEFT")
+			-- How the fuck can I make it not throw an error from FrameXML?
+			GameTooltip:SetInventoryItem("player", button:GetID(), true)
+			
+			GameTooltip:Show()
+		end
+
 	end)
 
 	button:SetScript("OnLeave", function(button)
