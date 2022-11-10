@@ -266,9 +266,14 @@ function OneCore:UpdateBag(bag)
 		slot.BattlepayItemTexture:Hide()
 
 		local icon, itemCount, locked, quality, readable, lootable, itemLink, isFiltered, noValue, itemID, isBound = GetContainerItemInfo(bag:GetID(), slot:GetID())
+		local itemIsUpgrade = PawnIsContainerItemAnUpgrade and PawnIsContainerItemAnUpgrade(bag:GetID(), slot:GetID()) or IsContainerItemAnUpgrade(bag:GetID(), slot:GetID())
 		if icon then
 			slot:SetItemButtonTexture(icon)
 			slot:SetItemButtonCount(itemCount)
+			-- Add Pawn Support
+			if (itemIsUpgrade) then
+				slot.UpgradeIcon:Show()
+			end
 			-- Bandaid cooldown fix start
 			local cooldown = _G[slot:GetName().."Cooldown"]
 			local start, duration, enable = GetContainerItemCooldown(bag:GetID(), slot:GetID())
@@ -280,6 +285,7 @@ function OneCore:UpdateBag(bag)
 			end
 			-- Bandaid cooldown fix stop
 		else
+			slot.UpgradeIcon:Hide()
 			-- Bandaid fix to remove item's previous location data when we drag it somewhere
 			_G[slot:GetName().."IconTexture"]:Hide()
 			_G[slot:GetName().."Count"]:Hide()
