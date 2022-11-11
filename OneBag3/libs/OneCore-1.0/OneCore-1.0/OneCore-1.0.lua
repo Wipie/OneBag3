@@ -263,10 +263,12 @@ function OneCore:UpdateBag(bag)
 
 		]]
 		-- Remove the blue border kinda scuffed aswell but if it works.. it works ..
-		slot.BattlepayItemTexture:Hide()
+		if (slot.BattlepayItemTexture) then
+			slot.BattlepayItemTexture:Hide()
+		end	
 
 		local containerInfo = C_Container.GetContainerItemInfo(bag:GetID(), slot:GetID())
-		local itemIsUpgrade = PawnIsContainerItemAnUpgrade and PawnIsContainerItemAnUpgrade(bag:GetID(), slot:GetID()) or IsContainerItemAnUpgrade(bag:GetID(), slot:GetID())
+		local itemIsUpgrade = PawnIsContainerItemAnUpgrade and PawnIsContainerItemAnUpgrade(bag:GetID(), slot:GetID())
 		if containerInfo then
 			slot:SetItemButtonTexture(containerInfo.iconFileID)
 			slot:SetItemButtonCount(containerInfo.stackCount)
@@ -285,7 +287,9 @@ function OneCore:UpdateBag(bag)
 			end
 			-- Bandaid cooldown fix stop
 		else
-			slot.UpgradeIcon:Hide()
+			if(slot.UpgradeIcon) then
+				slot.UpgradeIcon:Hide()
+			end
 			-- Bandaid fix to remove item's previous location data when we drag it somewhere
 			_G[slot:GetName().."IconTexture"]:Hide()
 			_G[slot:GetName().."Count"]:Hide()
