@@ -165,6 +165,7 @@ function OneCore:BuildFrame()
 			self.frame.bags[bag].size = size
 			self.doOrganization = true
 		end
+	
 
 		for slot = 1, size do
 			local slotkey = ('%s:%s'):format(bag, slot)
@@ -228,7 +229,6 @@ function OneCore:UpdateBag(bag)
 	if not self.frame.bags then
 		return
 	end
-
 	self:BuildFrame()
 	self:OrganizeFrame()
 
@@ -253,7 +253,6 @@ function OneCore:UpdateBag(bag)
 			--ContainerFrameMixin:UpdateCooldowns()
     	end
     end
-
     for slot=1, self.frame.bags[bag].size do
         local slot = self:GetSlot(bag, slot)
 		local bag = slot:GetParent()
@@ -276,6 +275,25 @@ function OneCore:UpdateBag(bag)
 			if (itemIsUpgrade) then
 				slot.UpgradeIcon:Show()
 			end
+			-- ProfessionQualityOverlay Support kinda scuffed..
+			quality = C_TradeSkillUI.GetItemReagentQualityByItemInfo(containerInfo.hyperlink)
+			if not quality then
+				quality = C_TradeSkillUI.GetItemCraftedQualityByItemInfo(containerInfo.hyperlink)
+			end
+			if quality then
+				if not slot.ProfessionQualityOverlay then
+					slot.ProfessionQualityOverlay = slot:CreateTexture(nil, "OVERLAY");
+					slot.ProfessionQualityOverlay:SetPoint("TOPLEFT", -3, 2);
+					slot.ProfessionQualityOverlay:SetDrawLayer("OVERLAY", 7);
+				end
+				local atlas = ("Professions-Icon-Quality-Tier%d-Inv"):format(quality);
+				slot.ProfessionQualityOverlay:SetAtlas(atlas, TextureKitConstants.UseAtlasSize);
+				slot.ProfessionQualityOverlay:Show()
+			end
+
+			if slot.ProfessionQualityOverlay and not quality then
+				slot.ProfessionQualityOverlay:Hide()
+			end
 			-- Bandaid cooldown fix start
 			local cooldown = _G[slot:GetName().."Cooldown"]
 			local start, duration, enable = C_Container.GetContainerItemCooldown(bag:GetID(), slot:GetID())
@@ -285,16 +303,19 @@ function OneCore:UpdateBag(bag)
 			else
 				SetItemButtonTextureVertexColor(slot, 1, 1, 1);
 			end
+			SetItemButtonDesaturated(slot, containerInfo.isLocked, 0.5, 0.5)
 			-- Bandaid cooldown fix stop
 		else
 			if(slot.UpgradeIcon) then
 				slot.UpgradeIcon:Hide()
 			end
+			if (slot.ProfessionQualityOverlay) then
+				slot.ProfessionQualityOverlay:Hide()
+			end
 			-- Bandaid fix to remove item's previous location data when we drag it somewhere
 			_G[slot:GetName().."IconTexture"]:Hide()
 			_G[slot:GetName().."Count"]:Hide()
 			_G[slot:GetName().."Cooldown"]:Hide()
-			SetItemButtonDesaturated(slot, false, 0.5, 0.5);
 		end
         self:ColorSlotBorder(slot)
         self:ApplySearchFilter(slot)
@@ -361,7 +382,7 @@ function OneCore:ColorSlotBorder(slot, fcolor)
 
 	local bcolor
 	if not fcolor and bag.type then
-		if bag:IsProfessionBag() then
+		if ((bag:IsProfessionBag()) or (bag:GetID() == 5)) then
 			bcolor = self.db.profile.colors.profession
 		end
 
@@ -478,9 +499,8 @@ function OneCore:UpdateItemLock(event, bagid, slotid)
     if bagid == nil or slotid == nil then
         return
     end
-
-    local texture, itemCount, locked, quality, readable = C_Container.GetContainerItemInfo(bagid, slotid);
-    SetItemButtonDesaturated(self:GetSlot(bagid, slotid), locked, 0.5, 0.5, 0.5);
+    local containerInfo = C_Container.GetContainerItemInfo(bagid, slotid)
+    SetItemButtonDesaturated(self:GetSlot(bagid, slotid), containerInfo.isLocked, 0.5, 0.5, 0.5)
 end
 
 -- slight bastardization of the embed system, using this to setup a lot of static values on the object.
